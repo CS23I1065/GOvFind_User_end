@@ -83,6 +83,30 @@ app.post('/webhook', async (req, res) => {
     const senderID = req.body.From;
     
     console.log(`Received message: ${incomingMsg} from ${senderID}`);
+    // Convert message to lowercase and trim for simple checks
+const lowerMsg = incomingMsg.toLowerCase().trim();
+
+// Greeting message for new users
+const greetingKeywords = ['hi', 'hello', 'hey', 'start', 'menu'];
+
+if (greetingKeywords.includes(lowerMsg)) {
+  await client.messages.create({
+    body: `👋 Hello! I'm your friendly Government Office Finder bot.  
+I can help you find the *nearest government office* based on the service you need and your city. 🏢📍
+
+You can ask me things like:
+🔹 *Where can I apply for a passport in Chennai?*  
+🔹 *Driving license office in Bangalore*  
+🔹 *PAN card center in Delhi*
+
+Just type your query in a simple sentence, and I'll handle the rest. 💡  
+Go ahead — what do you need help with today? 😊`,
+    from: twilioPhoneNumber,
+    to: senderID
+  });
+  return res.status(200).send();
+}
+
     
     // Extract service type and city from message
     const { serviceType, city } = extractQueryDetails(incomingMsg);
